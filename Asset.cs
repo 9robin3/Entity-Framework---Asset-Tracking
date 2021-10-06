@@ -15,20 +15,19 @@ namespace MiniProject_02_EF_AssetTracking
             
         }
 
-        //public Asset(string modelName, double price, string location, DateTime purchaseDate)
-        //{
-        //    //PurchaseDate = purchaseDate;
-        //    //ExpirationDate = purchaseDate.AddYears(3);
-        //    //ModelName = modelName;
-        //    //Price = price;
-           
-        //    //Office office = new Office(location);
-        //    //Office = office;
-        //    //OfficeId = Office.Id;
+        public Asset(string modelName, double price, string location, DateTime purchaseDate)
+        {
+            PurchaseDate = purchaseDate;
+            ExpirationDate = purchaseDate.AddYears(3);
+            ModelName = modelName;
+            Price = price;
 
-        //    //Console.WriteLine("---------------------------------------------------------");
-        //    //Console.WriteLine("Expiration date is: " + ExpirationDate.ToShortDateString());
-        //}
+            //Office office = new Office(location);
+            //Office = office;
+
+            Console.WriteLine("---------------------------------------------------------");
+            Console.WriteLine("Expiration date is: " + ExpirationDate.ToShortDateString());
+        }
 
         public int Id { get; set; }
         public string ModelName { get; set; }

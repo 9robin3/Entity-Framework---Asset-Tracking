@@ -13,15 +13,18 @@ namespace MiniProject_02_EF_AssetTracking
         static void Main(string[] args)
         {
 
-            //TEST CODE - ADD SAMPLE ASSET
-            //Asset test = new Asset("test", 3500, "LONDON", new DateTime(2019 - 01 - 01));
-            //Asset test2 = new Asset("test2", 9999, "LONDON", new DateTime(2019 - 01 - 01));
-            //db.Assets.Add(test);
-            //db.Assets.Add(test2);
-            //db.SaveChanges();
+            //Create and add the offices to the db
+            Office offNewYork = new Office("NEW YORK".ToUpper().Trim());
+            Office offStockholm = new Office("STOCKHOLM".ToUpper().Trim());
+            Office offLondon = new Office("LONDON".ToUpper().Trim());
 
-            Mobile mob = new Mobile("hejhej",8999,"stan",new DateTime(2021-01-01));
-            Mobile mob2 = new Mobile("hej2", 8999, "stan", new DateTime(2021 - 01 - 01));
+            db.Offices.AddRange(offNewYork, offStockholm, offLondon);
+            db.SaveChanges();
+
+            //TEST CODE - ADD SAMPLE ASSET
+            Mobile mob = new Mobile("hejhej",8999,offNewYork.Location,new DateTime(2021-01-01));
+            Mobile mob2 = new Mobile("hej2", 8999, offNewYork.Location, new DateTime(2021 - 01 - 01));
+            Computer cpu = new Computer("CPU1", 6700, offLondon.Location, new DateTime(2001 - 01 - 06));
             db.Add(mob);
             db.Add(mob2);
             db.SaveChanges();
@@ -31,14 +34,7 @@ namespace MiniProject_02_EF_AssetTracking
             //db.RemoveRange(db.Assets);
             //db.SaveChanges();
 
-
-            //Skapa de nödvändiga Offices objekten som assets ska referera till
-            Office offNewYork = new Office("NEW YORK".ToUpper().Trim());
-            Office offStockholm = new Office("STOCKHOLM".ToUpper().Trim());
-            Office offLondon = new Office("LONDON".ToUpper().Trim());
-
-            db.Offices.AddRange(offNewYork, offStockholm, offLondon);
-            db.SaveChanges();
+            
 
             //Asset offQuery = db.Assets.Where(c => c.Office.Location.Contains(offNewYork.Location)).FirstOrDefault();
 
@@ -134,22 +130,6 @@ namespace MiniProject_02_EF_AssetTracking
                 Mobile mob = new Mobile(modelName, price, location, purchaseDate);
                 db.Assets.Add(mob);
                 db.SaveChanges();
-            }
-        }
-
-        static void ConnectOffice(Asset asset, string location)
-        {
-            if (location == "LONDON")
-            {
-
-            }
-            else if(location == "NEW YORK")
-            {
-
-            }
-            else if(location == "STOCKHOLM")
-            {
-
             }
         }
 
