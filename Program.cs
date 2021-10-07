@@ -23,7 +23,7 @@ namespace MiniProject_02_EF_AssetTracking
             {
                 
                 Console.WriteLine("-----------------------------");
-                Console.WriteLine("1) Add asset");
+                Console.WriteLine("1) Create asset");
                 Console.WriteLine("2) Update asset");
                 Console.WriteLine("3) Delete asset");
                 Console.WriteLine("4) List all assets");
@@ -33,7 +33,7 @@ namespace MiniProject_02_EF_AssetTracking
 
                 if(inputKey.Key == ConsoleKey.D1)
                 {
-                    AddAsset();
+                    CreateAsset();
                 }
                 if (inputKey.Key == ConsoleKey.D2)
                 {
@@ -99,7 +99,7 @@ namespace MiniProject_02_EF_AssetTracking
             MainMenu();
         }
 
-        static void AddAsset()
+        static void CreateAsset()
         {
             Console.WriteLine("\n");
             Console.WriteLine("C to add computer, M to add mobile");
