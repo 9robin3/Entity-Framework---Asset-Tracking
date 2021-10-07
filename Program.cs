@@ -47,8 +47,8 @@ namespace MiniProject_02_EF_AssetTracking
                 {
                     ListAssets();
                 }
-
-                Console.ReadLine();
+                Console.WriteLine("\n");
+                //Console.ReadLine();
 
             }
         }
@@ -101,6 +101,7 @@ namespace MiniProject_02_EF_AssetTracking
 
         static void AddAsset()
         {
+            Console.WriteLine("\n");
             Console.WriteLine("C to add computer, M to add mobile");
             string typeToAdd = Console.ReadLine();
 
@@ -187,6 +188,7 @@ namespace MiniProject_02_EF_AssetTracking
 
         static void DeleteAsset()
         {
+            Console.WriteLine("\n");
             Console.WriteLine("Which asset to delete? Enter ID:");
             string id = Console.ReadLine();
             bool idAsInt = int.TryParse(id, out int idInt);
@@ -207,6 +209,7 @@ namespace MiniProject_02_EF_AssetTracking
 
         static void UpdateAsset()
         {
+            Console.WriteLine("\n");
             Console.WriteLine("Update which asset? Enter ID:");
             string id = Console.ReadLine();
             bool idAsInt = int.TryParse(id, out int idInt);
@@ -232,6 +235,7 @@ namespace MiniProject_02_EF_AssetTracking
 
         static void ListAssets()
         {
+            Console.WriteLine("\n");
             var sortedList = db.Assets.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
             //List<Asset> sortedList = assetList.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
 
