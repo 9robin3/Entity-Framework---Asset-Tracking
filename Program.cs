@@ -85,6 +85,7 @@ namespace MiniProject_02_EF_AssetTracking
             if (locationFormatted == "LONDON" || locationFormatted == "NEW YORK" || locationFormatted == "STOCKHOLM")
             {
                 ///I want to set up the office here, depedning on input
+                ///////where clause?
             }
             else
             {
