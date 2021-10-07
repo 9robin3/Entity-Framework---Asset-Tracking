@@ -186,24 +186,37 @@ namespace MiniProject_02_EF_AssetTracking
         {
             Console.WriteLine("Which asset to delete? Enter ID:");
             string id = Console.ReadLine();
-            
-            Asset asset = db.Assets.Find(id);
-            db.Assets.Remove(asset);
-            db.SaveChanges();
+            bool idAsInt = int.TryParse(id, out int idInt);
+
+            if (idAsInt)
+            {
+                Asset asset = db.Assets.Find(idInt);
+                db.Assets.Remove(asset);
+                db.SaveChanges();
+
+                Console.WriteLine("Asset with ID " + idInt + " deleted!");
+            }
         }
 
         static void UpdateAsset()
         {
             Console.WriteLine("Update which asset? Enter ID:");
             string id = Console.ReadLine();
+            bool idAsInt = int.TryParse(id, out int idInt);
 
-            Console.WriteLine("Give the asset a new name:");
-            string newName = Console.ReadLine();
+            if(idAsInt)
+            {
+                Console.WriteLine("Give the asset a new name:");
+                string newName = Console.ReadLine();
+
+                Asset asset = db.Assets.Find(idInt);
+                asset.ModelName = newName;
+                db.Assets.Update(asset);
+                db.SaveChanges();
+
+                Console.WriteLine("Asset updated! New name is: " + newName);
+            }
             
-            Asset asset = db.Assets.Find(id);
-            asset.ModelName = newName;
-            db.Assets.Update(asset);
-            db.SaveChanges();
         }
 
         static void ListAssets()
@@ -211,8 +224,8 @@ namespace MiniProject_02_EF_AssetTracking
             var sortedList = db.Assets.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
             //List<Asset> sortedList = assetList.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
 
-            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("ID:".PadRight(10) + "Type:".PadRight(15) + "Model:".PadRight(20) + "Office:".PadRight(15) + "Office ID".PadRight(10) + "Local Price:".PadRight(15) + "Currency:".PadRight(10) + "Purchase Date:".PadRight(15));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("ID:".PadRight(10) + "Type:".PadRight(15) + "Model:".PadRight(20) + "Office:".PadRight(15) + "Office ID:".PadRight(15) + "Local Price:".PadRight(15) + "Currency:".PadRight(15) + "Purchase Date:".PadRight(15));
             Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
 
             foreach (Asset a in sortedList)
@@ -230,9 +243,10 @@ namespace MiniProject_02_EF_AssetTracking
                     Console.ResetColor();
                 }
                 Console.WriteLine(a.Id.ToString().PadRight(10) + a.GetType().Name.ToString().PadRight(15) + a.ModelName.PadRight(20)
-                    + a.Office.Location.PadRight(20) + a.Office.Id.ToString().PadRight(10) + a.Office.ExchangeRate.ToString().PadRight(15)
-                    + a.Office.CurrencySymbol.PadRight(10) + a.PurchaseDate.ToShortDateString().PadRight(15)); ;
+                    + a.Office.Location.PadRight(15) + a.Office.Id.ToString().PadRight(15) + a.Office.ExchangeRate.ToString().PadRight(15)
+                    + a.Office.CurrencySymbol.PadRight(15) + a.PurchaseDate.ToShortDateString().PadRight(15)); ;
             }
+            Console.ResetColor();
             Console.WriteLine("-----------------------------------------------------------------------------------");
         }
     }
