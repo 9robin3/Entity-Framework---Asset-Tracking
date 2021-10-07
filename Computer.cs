@@ -4,8 +4,8 @@ namespace MiniProject_02_EF_AssetTracking
 {
     class Computer : Asset
     {
-        public Computer(string modelName, double price, string officeLocation, DateTime purchaseDate)
-                    : base(modelName, price, officeLocation, purchaseDate)
+        public Computer(string modelName, double price, Office office, DateTime purchaseDate)
+                    : base(modelName, price, office, purchaseDate)
         {
 
             Console.WriteLine("-----------------------------------------------------------");

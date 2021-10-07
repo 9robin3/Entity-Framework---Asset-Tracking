@@ -13,6 +13,10 @@ namespace MiniProject_02_EF_AssetTracking
         static void Main(string[] args)
         {
 
+            ////Where do I create the Office objects??
+
+            ////How and where do I connect a specific Office (Location) with an asset?
+            
             //Create and add the offices to the db
             Office offNewYork = new Office("NEW YORK".ToUpper().Trim());
             Office offStockholm = new Office("STOCKHOLM".ToUpper().Trim());
@@ -21,10 +25,10 @@ namespace MiniProject_02_EF_AssetTracking
             db.Offices.AddRange(offNewYork, offStockholm, offLondon);
             db.SaveChanges();
 
-            //TEST CODE - ADD SAMPLE ASSET
-            Mobile mob = new Mobile("hejhej",8999,offNewYork.Location,new DateTime(2021-01-01));
-            Mobile mob2 = new Mobile("hej2", 8999, offNewYork.Location, new DateTime(2021 - 01 - 01));
-            Computer cpu = new Computer("CPU1", 6700, offLondon.Location, new DateTime(2001 - 01 - 06));
+            //TEST CODE - ADD SAMPLE ASSETS
+            Mobile mob = new Mobile("Samsung Galaxy S20",8999, offNewYork, new DateTime(2021-01-01));
+            Mobile mob2 = new Mobile("Nokia X450", 5799, offNewYork, new DateTime(2021 - 01 - 01));
+            Computer cpu = new Computer("CPU1", 13500, offLondon, new DateTime(2001 - 01 - 06));
             db.Add(mob);
             db.Add(mob2);
             db.SaveChanges();
@@ -80,7 +84,7 @@ namespace MiniProject_02_EF_AssetTracking
 
             if (locationFormatted == "LONDON" || locationFormatted == "NEW YORK" || locationFormatted == "STOCKHOLM")
             {
-
+                ///I want to set up the office here, depedning on input
             }
             else
             {
@@ -120,14 +124,14 @@ namespace MiniProject_02_EF_AssetTracking
 
             if (type.ToUpper().Trim() == "C")
             {
-                Computer com = new Computer(modelName, price, location, purchaseDate);
+                Computer com = new Computer(modelName, price, officeHere, purchaseDate);
                 db.Assets.Add(com);
                 db.SaveChanges();
             }
 
             else if (type.ToUpper().Trim() == "M")
             {
-                Mobile mob = new Mobile(modelName, price, location, purchaseDate);
+                Mobile mob = new Mobile(modelName, price, officeHere, purchaseDate);
                 db.Assets.Add(mob);
                 db.SaveChanges();
             }

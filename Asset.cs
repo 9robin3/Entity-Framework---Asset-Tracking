@@ -15,14 +15,14 @@ namespace MiniProject_02_EF_AssetTracking
             
         }
 
-        public Asset(string modelName, double price, string location, DateTime purchaseDate)
+        public Asset(string modelName, double price, Office office, DateTime purchaseDate)
         {
             PurchaseDate = purchaseDate;
             ExpirationDate = purchaseDate.AddYears(3);
             ModelName = modelName;
             Price = price;
 
-            //Office office = new Office(location);
+            Office = office;
             //Office = office;
 
             Console.WriteLine("---------------------------------------------------------");
