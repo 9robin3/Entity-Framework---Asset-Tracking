@@ -117,6 +117,7 @@ namespace MiniProject_02_EF_AssetTracking
             string modelName = Console.ReadLine();
 
             int nameConflicts = db.Assets.Where(asset => asset.ModelName.Contains(modelName)).Count();
+           
             if (nameConflicts > 0)
             {
                 ErrorMessage("CONFLICT ERROR! Model name already taken! \n");  
@@ -127,7 +128,9 @@ namespace MiniProject_02_EF_AssetTracking
             string locationFormatted = location.ToUpper().Trim();
             var officeToAdd = new Office();
 
-            if (db.Offices.Where(o => o.Location.Contains(locationFormatted)).Count() > 0)
+            int correctOffices = db.Offices.Where(o => o.Location.Contains(locationFormatted)).Count();
+
+            if (correctOffices > 0)
             {
                 officeToAdd = db.Offices.Where(o => o.Location.Contains(locationFormatted)).FirstOrDefault();
             }
