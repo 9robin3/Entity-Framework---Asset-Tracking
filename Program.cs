@@ -48,27 +48,24 @@ namespace MiniProject_02_EF_AssetTracking
                     ListAssets();
                 }
                 Console.WriteLine("\n");
-                //Console.ReadLine();
+                
 
             }
         }
 
         static void SetupData()
         {
-            Console.WriteLine("Clearing database");
-            Console.WriteLine("Creating office objects");
-            Console.WriteLine("Adding sample assets to database");
-            Console.WriteLine("-----------------------");
-
-
+            ///Clear database
             db.RemoveRange(db.Assets);
             db.RemoveRange(db.Offices);
             db.SaveChanges();
 
+            //Set exchangerate multipliers
             double toSEK = 8.67;
             double toUK = 0.72;
             double toUS = 1;
 
+            //Create initial office objects, and add them to the DB
             Office offNewYork = new Office("NEW YORK", toUS, "$");
             Office offStockholm = new Office("STOCKHOLM", toSEK, ":-");
             Office offLondon = new Office("LONDON", toUK, "£");
@@ -76,6 +73,7 @@ namespace MiniProject_02_EF_AssetTracking
             db.Offices.AddRange(offNewYork, offStockholm, offLondon);
             db.SaveChanges();
 
+            //Create search queries for the office objects
             var london = db.Offices.Where(o => o.Location.Contains("LONDON")).FirstOrDefault();
             var newyork = db.Offices.Where(o => o.Location.Contains("NEW YORK")).FirstOrDefault();
             var stockholm = db.Offices.Where(o => o.Location.Contains("STOCKHOLM")).FirstOrDefault();
@@ -117,8 +115,8 @@ namespace MiniProject_02_EF_AssetTracking
             Console.WriteLine("Model name: ");
             string modelName = Console.ReadLine();
 
+            //Get a list of all names that conflicts with input data, if there is none, continue
             int nameConflicts = db.Assets.Where(asset => asset.ModelName.Contains(modelName)).Count();
-           
             if (nameConflicts > 0)
             {
                 ErrorMessage("CONFLICT ERROR! Model name already taken! \n");  
@@ -129,8 +127,9 @@ namespace MiniProject_02_EF_AssetTracking
             string locationFormatted = location.ToUpper().Trim();
             var officeToAdd = new Office();
 
+            //Get a list of valid office object/names, if there is more than 0,
+            //create temp office object set to the location input, if it contains it
             int correctOffices = db.Offices.Where(o => o.Location.Contains(locationFormatted)).Count();
-
             if (correctOffices > 0)
             {
                 officeToAdd = db.Offices.Where(o => o.Location.Contains(locationFormatted)).FirstOrDefault();
@@ -170,6 +169,7 @@ namespace MiniProject_02_EF_AssetTracking
                 
             }
 
+            //Create a mobile or computer and calculate exchangerate depending on the office object
             if (typeToAdd.ToUpper().Trim() == "C")
             {
                 double convertedPrice = price * officeToAdd.ExchangeRate;
