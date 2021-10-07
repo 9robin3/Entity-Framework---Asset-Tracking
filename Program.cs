@@ -13,182 +13,229 @@ namespace MiniProject_02_EF_AssetTracking
         static void Main(string[] args)
         {
             SetupData();
+            MainMenu();
+        }
+
+        static void MainMenu()
+        {
 
             while (true)
             {
-                Console.ResetColor();
-                Console.WriteLine("Type C (computer) or M (mobile) to create assets, Q to print and quit");
+                
+                Console.WriteLine("-----------------------------");
+                Console.WriteLine("1) Add asset");
+                Console.WriteLine("2) Update asset");
+                Console.WriteLine("3) Delete asset");
+                Console.WriteLine("4) List all assets");
+                Console.WriteLine("-----------------------------");
+
                 string input = Console.ReadLine();
 
-                if (input.ToUpper().Trim() == "Q")
+                if(input.Trim() == "1")
+                {
+                    AddAsset();
+                }
+                if (input.Trim() == "2")
+                {
+                    UpdateAsset();
+                }
+                if (input.Trim() == "3")
+                {
+                    DeleteAsset();
+                }
+                if (input.Trim() == "4")
                 {
                     ListAssets();
-                    //break;
-                }
-                else if (input.ToUpper().Trim() == "C" || input.ToUpper().Trim() == "M")
-                {
-                    AddAsset(input);
                 }
 
                 Console.ReadLine();
 
             }
+        }
 
-            static void SetupData()
+        static void SetupData()
+        {
+            Console.WriteLine("Clearing database");
+            Console.WriteLine("Creating office objects");
+            Console.WriteLine("Adding sample assets to database");
+            Console.WriteLine("-----------------------");
+
+
+            db.RemoveRange(db.Assets);
+            db.RemoveRange(db.Offices);
+            db.SaveChanges();
+
+            double toSEK = 8.67;
+            double toUK = 0.72;
+            double toUS = 1;
+
+            Office offNewYork = new Office("NEW YORK", toUS, "$");
+            Office offStockholm = new Office("STOCKHOLM", toSEK, ":-");
+            Office offLondon = new Office("LONDON", toUK, "£");
+
+            db.Offices.AddRange(offNewYork, offStockholm, offLondon);
+            db.SaveChanges();
+
+            var london = db.Offices.Where(o => o.Location.Contains("LONDON")).FirstOrDefault();
+            var newyork = db.Offices.Where(o => o.Location.Contains("NEW YORK")).FirstOrDefault();
+            var stockholm = db.Offices.Where(o => o.Location.Contains("STOCKHOLM")).FirstOrDefault();
+
+            //TEST CODE - ADD SAMPLE ASSETS
+            Mobile mob = new Mobile("Samsung Galaxy S20", 8999, london, new DateTime(2021 - 01 - 01));
+            Mobile mob2 = new Mobile("Nokia X450", 5799, london, new DateTime(2021 - 01 - 01));
+            Computer cpu2 = new Computer("CPU2", 18000, newyork, DateTime.Now);
+            db.Add(mob);
+            db.Add(mob2);
+            db.Add(cpu2);
+
+            db.SaveChanges();
+        }
+
+        static void ErrorMessage(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
+            MainMenu();
+        }
+
+        static void AddAsset()
+        {
+            Console.WriteLine("C to add computer, M to add mobile");
+            string typeToAdd = Console.ReadLine();
+
+            if (typeToAdd.ToUpper().Trim() == "C" || typeToAdd.ToUpper().Trim() == "M")
             {
-                db.RemoveRange(db.Assets);
-                db.RemoveRange(db.Offices);
-                db.SaveChanges();
+            }
+            else
+            {
+                ErrorMessage("ERROR! C or M is the options for what to create!");
 
-                double toSEK = 8.67;
-                double toUK = 0.72;
-                double toUS = 1;
-
-                Office offNewYork = new Office("NEW YORK", toUS, "$");
-                Office offStockholm = new Office("STOCKHOLM", toSEK, ":-");
-                Office offLondon = new Office("LONDON", toUK, "£");
-
-                db.Offices.AddRange(offNewYork, offStockholm, offLondon);
-                db.SaveChanges();
-
-                var london = db.Offices.Where(o => o.Location.Contains("LONDON")).FirstOrDefault();
-                var newyork = db.Offices.Where(o => o.Location.Contains("NEW YORK")).FirstOrDefault();
-                var stockholm = db.Offices.Where(o => o.Location.Contains("STOCKHOLM")).FirstOrDefault();
-
-                //TEST CODE - ADD SAMPLE ASSETS
-                Mobile mob = new Mobile("Samsung Galaxy S20", 8999, london, new DateTime(2021 - 01 - 01));
-                Mobile mob2 = new Mobile("Nokia X450", 5799, london, new DateTime(2021 - 01 - 01));
-                Computer cpu2 = new Computer("CPU2", 18000, newyork, DateTime.Now);
-                db.Add(mob);
-                db.Add(mob2);
-                db.Add(cpu2);
-
-                db.SaveChanges();
             }
 
-            static void AddAsset(string type)
-            {
-                Console.WriteLine("Model name: ");
-                string modelName = Console.ReadLine();
+            Console.WriteLine("Model name: ");
+            string modelName = Console.ReadLine();
 
-                int nameConflicts = db.Assets.Where(asset => asset.ModelName.Contains(modelName)).Count();
-                if (nameConflicts > 0)
+            int nameConflicts = db.Assets.Where(asset => asset.ModelName.Contains(modelName)).Count();
+            if (nameConflicts > 0)
+            {
+                ErrorMessage("CONFLICT ERROR! Model name already taken! \n");  
+            }
+
+            Console.WriteLine("Enter an office (London, New York or Stockholm)): ");
+            string location = Console.ReadLine();
+            string locationFormatted = location.ToUpper().Trim();
+            var officeToAdd = new Office();
+
+            if (db.Offices.Where(o => o.Location.Contains(locationFormatted)).Count() > 0)
+            {
+                officeToAdd = db.Offices.Where(o => o.Location.Contains(locationFormatted)).FirstOrDefault();
+            }
+            else
+            {
+                ErrorMessage("ERROR! Please input either London, New York or Stockholm as office!");   
+            }
+
+            Console.WriteLine("Price (US $): ");
+            string priceStr = Console.ReadLine();
+            bool priceAsDouble = double.TryParse(priceStr, out double price);
+
+            if (!priceAsDouble)
+            {
+
+                ErrorMessage("ERROR! Price must be a number!");
+                
+            }
+
+
+            Console.WriteLine("Purchase date: (Written like XXXX-XX-XX)");
+            string purchaseDateStr = Console.ReadLine();
+            bool purchaseAsDate = DateTime.TryParse(purchaseDateStr, out DateTime purchaseDate);
+
+            if (!purchaseAsDate)
+            {
+
+                ErrorMessage("ERROR! Date must be written as a proper date");
+                
+            }
+
+            if (purchaseDate < new DateTime(1950, 01, 01))
+            {
+
+                ErrorMessage("ERROR! Date must be written as a proper date");
+                
+            }
+
+            if (typeToAdd.ToUpper().Trim() == "C")
+            {
+                double convertedPrice = price * officeToAdd.ExchangeRate;
+                Computer com = new Computer(modelName, convertedPrice, officeToAdd, purchaseDate);
+                db.Assets.Add(com);
+                db.SaveChanges();
+            }
+            else if (typeToAdd.ToUpper().Trim() == "M")
+            {
+                double convertedPrice = price * officeToAdd.ExchangeRate;
+                Mobile mob = new Mobile(modelName, convertedPrice, officeToAdd, purchaseDate);
+                db.Assets.Add(mob);
+                db.SaveChanges();
+            }
+        }
+
+        static void DeleteAsset()
+        {
+            Console.WriteLine("Which asset to delete? Enter ID:");
+            string id = Console.ReadLine();
+            
+            Asset asset = db.Assets.Find(id);
+            db.Assets.Remove(asset);
+            db.SaveChanges();
+        }
+
+        static void UpdateAsset()
+        {
+            Console.WriteLine("Update which asset? Enter ID:");
+            string id = Console.ReadLine();
+
+            Console.WriteLine("Give the asset a new name:");
+            string newName = Console.ReadLine();
+            
+            Asset asset = db.Assets.Find(id);
+            asset.ModelName = newName;
+            db.Assets.Update(asset);
+            db.SaveChanges();
+        }
+
+        static void ListAssets()
+        {
+            var sortedList = db.Assets.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
+            //List<Asset> sortedList = assetList.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
+
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("ID:".PadRight(10) + "Type:".PadRight(15) + "Model:".PadRight(20) + "Office:".PadRight(15) + "Office ID".PadRight(10) + "Local Price:".PadRight(15) + "Currency:".PadRight(10) + "Purchase Date:".PadRight(15));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
+
+            foreach (Asset a in sortedList)
+            {
+                if (DateTime.Now > a.ExpirationDate.AddMonths(-3))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("CONFLICT ERROR! Model name already taken! \n");
-                    return;
                 }
-
-                Console.WriteLine("Enter an office (London, New York or Stockholm)): ");
-                string location = Console.ReadLine();
-                string locationFormatted = location.ToUpper().Trim();
-                var officeToAdd = new Office();
-
-                //if (locationFormatted == || locationFormatted == "NEW YORK" || locationFormatted == "STOCKHOLM")
-                //{  
-
-                //}
-
-                if (db.Offices.Where(o => o.Location.Contains(locationFormatted)).Count() > 0)
+                else if (DateTime.Now > a.ExpirationDate.AddMonths(-6))
                 {
-                    officeToAdd = db.Offices.Where(o => o.Location.Contains(locationFormatted)).FirstOrDefault();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR! Please input either London, New York or Stockholm as office!");
-                    return;
+                    Console.ResetColor();
                 }
-
-                Console.WriteLine("Price (US $): ");
-                string priceStr = Console.ReadLine();
-                bool priceAsDouble = double.TryParse(priceStr, out double price);
-
-                if (!priceAsDouble)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR! Price must be a number!");
-                    return;
-                }
-
-
-                Console.WriteLine("Purchase date: (Written like XXXX-XX-XX)");
-                string purchaseDateStr = Console.ReadLine();
-                bool purchaseAsDate = DateTime.TryParse(purchaseDateStr, out DateTime purchaseDate);
-
-                if (!purchaseAsDate)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR! Date must be written as a proper date");
-                    return;
-                }
-
-                if (purchaseDate < new DateTime(1950, 01, 01))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR! Date must be written as a proper date");
-                    return;
-                }
-
-                if (type.ToUpper().Trim() == "C")
-                {
-                    Computer com = new Computer(modelName, price * officeToAdd.ExchangeRate, officeToAdd, purchaseDate);
-                    db.Assets.Add(com);
-                    db.SaveChanges();
-                }
-
-                else if (type.ToUpper().Trim() == "M")
-                {
-                    Mobile mob = new Mobile(modelName, price * officeToAdd.ExchangeRate, officeToAdd, purchaseDate);
-                    db.Assets.Add(mob);
-                    db.SaveChanges();
-                }
+                Console.WriteLine(a.Id.ToString().PadRight(10) + a.GetType().Name.ToString().PadRight(15) + a.ModelName.PadRight(20)
+                    + a.Office.Location.PadRight(20) + a.Office.Id.ToString().PadRight(10) + a.Office.ExchangeRate.ToString().PadRight(15)
+                    + a.Office.CurrencySymbol.PadRight(10) + a.PurchaseDate.ToShortDateString().PadRight(15)); ;
             }
-
-            static void DeleteAsset(string id)
-            {
-                Asset asset = db.Assets.Find(id);
-                db.Assets.Remove(asset);
-            }
-
-            static void UpdateAsset(string id, string newName)
-            {
-                Asset asset = db.Assets.Find(id);
-                asset.ModelName = newName;
-                db.Assets.Update(asset);
-                db.SaveChanges();
-            }
-
-            static void ListAssets()
-            {
-                var sortedList = db.Assets.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
-                //List<Asset> sortedList = assetList.OrderBy(asset => asset.Office.Location).ThenBy(asset => asset.PurchaseDate).ToList();
-
-                Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
-                Console.WriteLine("Type".PadRight(10) + "Model".PadRight(15) + "Office:".PadRight(15) + "Price:".PadRight(10) + "Currency:".PadRight(10) + "Purchase Date:".PadRight(15));
-                Console.WriteLine("---------------------------------------------------------------------------------------------------------------------");
-
-                foreach (Asset a in sortedList)
-                {
-                    if (DateTime.Now > a.ExpirationDate.AddMonths(-3))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                    else if (DateTime.Now > a.ExpirationDate.AddMonths(-6))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                    }
-                    else
-                    {
-                        Console.ResetColor();
-                    }
-                    Console.WriteLine(a.GetType().Name.ToString().PadRight(10) + a.ModelName.PadRight(15)
-                        + a.Office.Location.PadRight(15) + a.Office.ExchangeRate.ToString().PadRight(10)
-                        + a.Office.CurrencySymbol.PadRight(10) + a.PurchaseDate.ToShortDateString().PadRight(15)); ;
-                }
-                Console.WriteLine("-----------------------------------------------------------------------------------");
-            }
+            Console.WriteLine("-----------------------------------------------------------------------------------");
         }
     }
 }
+
 

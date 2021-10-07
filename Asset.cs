@@ -29,32 +29,6 @@ namespace MiniProject_02_EF_AssetTracking
             Console.WriteLine("Expiration date is: " + ExpirationDate.ToShortDateString());
         }
 
-        //public void GetRegion(double price)
-        //{
-        //    
-
-        //    if (Location.ToUpper().Trim() == "LONDON")
-        //    {
-        //        ConvertedPrice = price * toUK;
-        //        Currency = "£";
-        //    }
-        //    else if (Location.ToUpper().Trim() == "NEW YORK")
-        //    {
-        //        ConvertedPrice = price;
-        //        Currency = "$";
-        //    }
-        //    else if (Location.ToUpper().Trim() == "STOCKHOLM")
-        //    {
-        //        ConvertedPrice = price * toSEK;
-        //        Currency = "SEK";
-        //    }
-        //    else
-        //    {
-
-        //    }
-        //}
-double toSEK = 8.67;
-        //    double toUK = 0.72;
         public int Id { get; set; }
         public string ModelName { get; set; }
         public double Price { get; set; }
