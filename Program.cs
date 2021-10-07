@@ -29,21 +29,21 @@ namespace MiniProject_02_EF_AssetTracking
                 Console.WriteLine("4) List all assets");
                 Console.WriteLine("-----------------------------");
 
-                string input = Console.ReadLine();
+                ConsoleKeyInfo inputKey = Console.ReadKey();
 
-                if(input.Trim() == "1")
+                if(inputKey.Key == ConsoleKey.D1)
                 {
                     AddAsset();
                 }
-                if (input.Trim() == "2")
+                if (inputKey.Key == ConsoleKey.D2)
                 {
                     UpdateAsset();
                 }
-                if (input.Trim() == "3")
+                if (inputKey.Key == ConsoleKey.D3)
                 {
                     DeleteAsset();
                 }
-                if (input.Trim() == "4")
+                if (inputKey.Key == ConsoleKey.D4)
                 {
                     ListAssets();
                 }
