@@ -199,6 +199,10 @@ namespace MiniProject_02_EF_AssetTracking
 
                 Console.WriteLine("Asset with ID " + idInt + " deleted!");
             }
+            else
+            {
+                ErrorMessage("Please write a valid number as ID!");
+            }
         }
 
         static void UpdateAsset()
@@ -219,7 +223,11 @@ namespace MiniProject_02_EF_AssetTracking
 
                 Console.WriteLine("Asset updated! New name is: " + newName);
             }
-            
+            else
+            {
+                ErrorMessage("Please write a valid number as ID!");
+            }
+
         }
 
         static void ListAssets()
