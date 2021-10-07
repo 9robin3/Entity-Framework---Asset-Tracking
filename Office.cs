@@ -13,41 +13,18 @@ namespace MiniProject_02_EF_AssetTracking
 
         }
 
-        public Office(string location)
+        public Office(string location, double exRate, string currSymbol)
         {
             Location = location;
+            ExchangeRate = exRate;
+            CurrencySymbol = currSymbol;
+
             //GetRegion(price);
-        }
-
-        public void GetRegion(double price)
-        {
-            double toSEK = 8.67;
-            double toUK = 0.72;
-
-            if (Location.ToUpper().Trim() == "LONDON")
-            {
-                ConvertedPrice = price * toUK;
-                Currency = "£";
-            }
-            else if (Location.ToUpper().Trim() == "NEW YORK")
-            {
-                ConvertedPrice = price;
-                Currency = "$";
-            }
-            else if (Location.ToUpper().Trim() == "STOCKHOLM")
-            {
-                ConvertedPrice = price * toSEK;
-                Currency = "SEK";
-            }
-            else
-            {
-
-            }
         }
 
         public int Id { get;  set; }
         public string Location { get; set; }
-        public string Currency { get; set; }
-        public double ConvertedPrice { get; set; }
+        public string CurrencySymbol { get; set; }
+        public double ExchangeRate { get; set; }
     }
 }
